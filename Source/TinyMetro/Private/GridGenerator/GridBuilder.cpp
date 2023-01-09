@@ -26,7 +26,7 @@ AGridBuilder::AGridBuilder() : GeneratorIndex(0)
 		TEXT("StaticMesh'/Game/GridBuilder/Meshes/SM_GirdCell_Ground.SM_GirdCell_Ground'"));
 	meshGround = objGround.Object;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> objWater(
-		TEXT("StaticMesh'/Game/GridBuilder/Meshes/SM_GridCell_Water.SM_GridCell_Water'"));
+		TEXT("StaticMesh'/Game/LowpolyStyle/Asia/Meshes/SM_ZenGarden_Water.SM_ZenGarden_Water'"));
 	meshWater = objWater.Object;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> objHill(
 		TEXT("StaticMeshVersionPlusOne'/Game/GridBuilder/Meshes/SM_GirdCell_Hill.SM_GirdCell_Hill'"));
@@ -41,6 +41,7 @@ AGridBuilder::AGridBuilder() : GeneratorIndex(0)
 		
 		for (auto& i : GridPoints) {
 			FTransform transform = UKismetMathLibrary::MakeTransform(i.WorldLocation, GetActorRotation());
+			FTransform waterTransform = UKismetMathLibrary::MakeTransform(FVector(i.WorldLocation.X, i.WorldLocation.Y - 155.0f, i.WorldLocation.Z - 130.0f), GetActorRotation(), FVector(0.44f, 0.75f, 1.0f));
 			FName name = *FString::Printf(TEXT("Tile %i"), i.Index);
 			UPROPERTY()
 				UStaticMeshComponent* mesh = CreateDefaultSubobject<UStaticMeshComponent>(name);
@@ -50,6 +51,7 @@ AGridBuilder::AGridBuilder() : GeneratorIndex(0)
 				mesh->SetStaticMesh(meshGround);
 				break;
 			case GridType::Water:
+				mesh->SetRelativeTransform(waterTransform);
 				mesh->SetStaticMesh(meshWater);
 				break;
 			case GridType::Hill:
